@@ -14,3 +14,17 @@ export type FastifyTypedInstance = FastifyInstance<
   FastifyBaseLogger,
   ZodTypeProvider
 >;
+
+export type TokenContent = {
+  sub: string;
+  email: string;
+};
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    user: {
+      sub: string;
+      email: string;
+    };
+  }
+}

@@ -1,3 +1,4 @@
+import { hashSync } from 'bcrypt';
 import { z } from 'zod';
 import prisma from '../lib/prisma';
 import { FastifyTypedInstance } from '../types';
@@ -10,13 +11,13 @@ type User = {
   profile?: {};
 };
 
-export async function createUser(app: FastifyTypedInstance) {
+export async function signUp(app: FastifyTypedInstance) {
   app.post(
-    '/users',
+    '/auth/sign-up',
     {
       schema: {
-        description: 'Create a new user',
-        tags: ['users'],
+        description: 'Sign up',
+        tags: ['auth'],
         body: z.object({
           name: z.string(),
           email: z.string().email(),
@@ -34,17 +35,19 @@ export async function createUser(app: FastifyTypedInstance) {
     async (request, reply) => {
       const { name, email, password, role, profile = {} } = request.body;
 
+      const hash = hashSync(password, 10);
+
       const user = await prisma.user.create({
         data: {
           name,
           email,
-          password,
+          password: hash,
           role,
           profile,
         },
       });
 
-      return reply.status(201).send({ userId: user.id });
+      return reply.code(201).send({ userId: user.id });
     }
   );
 }
