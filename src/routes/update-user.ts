@@ -6,11 +6,11 @@ import { FastifyTypedInstance } from '../types';
 
 export async function updateUser(app: FastifyTypedInstance) {
   app.patch(
-    '/users/me',
+    '/users',
     {
       preHandler: [auth],
       schema: {
-        description: 'Update current user information',
+        description: 'Update authenticated user account',
         tags: ['users'],
         body: z.object({
           name: z.string().optional(),
@@ -35,16 +35,9 @@ export async function updateUser(app: FastifyTypedInstance) {
       const { name, password, profile } = request.body;
 
       if (Object.keys(request.body).length === 0) {
-        return reply.status(400).send({
+        return reply.code(400).send({
           message: 'At least one field must be provided for update',
         });
-      }
-      const user = await prisma.user.findUnique({
-        where: { id: userId },
-      });
-
-      if (!user) {
-        return reply.status(404).send({ message: 'User not found' });
       }
 
       const dataToBeUpdated: Record<string, any> = {};
@@ -61,7 +54,7 @@ export async function updateUser(app: FastifyTypedInstance) {
         dataToBeUpdated.profile = profile;
       }
 
-      const updatedUser = await prisma.user.update({
+      await prisma.user.update({
         where: { id: userId },
         data: dataToBeUpdated,
       });

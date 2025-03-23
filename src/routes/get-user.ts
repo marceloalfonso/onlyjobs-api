@@ -1,17 +1,17 @@
 import { z } from 'zod';
+import dayjs from '../lib/dayjs';
 import prisma from '../lib/prisma';
+import { auth } from '../middlewares/auth';
 import { FastifyTypedInstance } from '../types';
 
 export async function getUser(app: FastifyTypedInstance) {
   app.get(
-    '/users/:userId',
+    '/users',
     {
+      preHandler: [auth],
       schema: {
-        description: 'Get user by ID',
+        description: '"Get authenticated user information"',
         tags: ['users'],
-        params: z.object({
-          userId: z.string(),
-        }),
         response: {
           200: z.object({
             id: z.string(),
@@ -21,6 +21,7 @@ export async function getUser(app: FastifyTypedInstance) {
             profile: z.record(z.any()),
             chatIds: z.array(z.string()),
             createdAt: z.string(),
+            updatedAt: z.string(),
           }),
           404: z.object({
             message: z.string(),
@@ -29,7 +30,7 @@ export async function getUser(app: FastifyTypedInstance) {
       },
     },
     async (request, reply) => {
-      const { userId } = request.params;
+      const userId = request.user.sub;
 
       const user = await prisma.user.findUnique({
         where: {
@@ -43,6 +44,7 @@ export async function getUser(app: FastifyTypedInstance) {
           profile: true,
           chatIds: true,
           createdAt: true,
+          updatedAt: true,
         },
       });
 
@@ -55,7 +57,8 @@ export async function getUser(app: FastifyTypedInstance) {
       return reply.code(200).send({
         ...user,
         profile: user.profile as Record<string, any>,
-        createdAt: user.createdAt.toISOString(),
+        createdAt: dayjs(user.createdAt).format('DD/MM/YY - HH:mm:ss'),
+        updatedAt: dayjs(user.updatedAt).format('DD/MM/YY - HH:mm:ss'),
       });
     }
   );

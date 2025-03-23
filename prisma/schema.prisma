@@ -21,6 +21,7 @@ model User {
   profile   Json
   chatIds   String[] @map("chat_ids") @db.ObjectId
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   sentLikes     Like[]    @relation("SentLikes")
   receivedLikes Like[]    @relation("ReceivedLikes")
@@ -40,19 +41,20 @@ model Like {
   fromUser User @relation("SentLikes", fields: [fromUserId], references: [id])
   toUser   User @relation("ReceivedLikes", fields: [toUserId], references: [id])
 
-  @@unique([fromUserId, toUserId])
+  @@unique([fromUserId, toUserId], name: "uniqueFromTo")
   @@map("likes")
 }
 
 model Chat {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  userIds       String[] @map("user_ids") @db.ObjectId
-  lastMessageAt DateTime @default(now()) @map("last_message_at")
-  createdAt     DateTime @default(now()) @map("created_at")
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userIds   String[] @map("user_ids") @db.ObjectId
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   users    User[]    @relation("UserChats", fields: [userIds], references: [id])
   messages Message[] @relation("ChatMessages")
 
+  @@unique([userIds])
   @@map("chats")
 }
 
@@ -63,6 +65,7 @@ model Message {
   content   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   sender User @relation("SentMessages", fields: [senderId], references: [id])
   chat   Chat @relation("ChatMessages", fields: [chatId], references: [id])

@@ -3,20 +3,12 @@ import { z } from 'zod';
 import prisma from '../lib/prisma';
 import { FastifyTypedInstance } from '../types';
 
-type User = {
-  name: string;
-  email: string;
-  password: string;
-  role: 'CANDIDATE' | 'COMPANY';
-  profile?: {};
-};
-
-export async function signUp(app: FastifyTypedInstance) {
+export async function createUser(app: FastifyTypedInstance) {
   app.post(
     '/auth/sign-up',
     {
       schema: {
-        description: 'Sign up',
+        description: 'Create a new user',
         tags: ['auth'],
         body: z.object({
           name: z.string(),
@@ -29,11 +21,24 @@ export async function signUp(app: FastifyTypedInstance) {
           201: z.object({
             userId: z.string(),
           }),
+          409: z.object({
+            message: z.string(),
+          }),
         },
       },
     },
     async (request, reply) => {
       const { name, email, password, role, profile = {} } = request.body;
+
+      const existingUser = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (existingUser) {
+        return reply.code(409).send({ message: 'User already exists' });
+      }
 
       const hash = hashSync(password, 10);
 

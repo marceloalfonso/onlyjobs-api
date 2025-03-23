@@ -1,13 +1,14 @@
 import { z } from 'zod';
+import dayjs from '../lib/dayjs';
 import prisma from '../lib/prisma';
 import { FastifyTypedInstance } from '../types';
 
-export async function getUsers(app: FastifyTypedInstance) {
+export async function getCandidates(app: FastifyTypedInstance) {
   app.get(
-    '/users',
+    '/users/candidates',
     {
       schema: {
-        description: 'Get all users',
+        description: 'Get users with "CANDIDATE" role',
         tags: ['users'],
         response: {
           200: z.array(
@@ -16,9 +17,10 @@ export async function getUsers(app: FastifyTypedInstance) {
               name: z.string(),
               email: z.string(),
               role: z.string(),
-              profile: z.record(z.any()).optional(),
+              profile: z.record(z.any()),
               chatIds: z.array(z.string()),
               createdAt: z.string(),
+              updatedAt: z.string(),
             })
           ),
         },
@@ -26,6 +28,9 @@ export async function getUsers(app: FastifyTypedInstance) {
     },
     async (request, reply) => {
       const users = await prisma.user.findMany({
+        where: {
+          role: 'CANDIDATE',
+        },
         select: {
           id: true,
           name: true,
@@ -34,6 +39,7 @@ export async function getUsers(app: FastifyTypedInstance) {
           profile: true,
           chatIds: true,
           createdAt: true,
+          updatedAt: true,
         },
       });
 
@@ -41,7 +47,8 @@ export async function getUsers(app: FastifyTypedInstance) {
         users.map((user) => ({
           ...user,
           profile: user.profile as Record<string, any>,
-          createdAt: user.createdAt.toISOString(),
+          createdAt: dayjs(user.createdAt).format('DD/MM/YY - HH:mm:ss'),
+          updatedAt: dayjs(user.updatedAt).format('DD/MM/YY - HH:mm:ss'),
         }))
       );
     }

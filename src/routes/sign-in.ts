@@ -9,7 +9,7 @@ export async function signIn(app: FastifyTypedInstance) {
     '/auth/sign-in',
     {
       schema: {
-        description: 'Sign in',
+        description: 'Authenticate an user',
         tags: ['auth'],
         body: z.object({
           email: z.string().email(),

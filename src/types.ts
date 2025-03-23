@@ -22,9 +22,6 @@ export type TokenContent = {
 
 declare module 'fastify' {
   interface FastifyRequest {
-    user: {
-      sub: string;
-      email: string;
-    };
+    user: TokenContent;
   }
 }
