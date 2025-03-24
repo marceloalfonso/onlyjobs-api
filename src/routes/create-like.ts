@@ -40,6 +40,7 @@ export async function createLike(app: FastifyTypedInstance) {
           where: { id: fromUserId },
           select: { role: true },
         }),
+
         prisma.user.findUnique({
           where: { id: toUserId },
           select: { role: true },

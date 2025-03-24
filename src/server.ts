@@ -8,6 +8,8 @@ import {
   validatorCompiler,
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
+import { Server } from 'socket.io';
+import { setupSocketIO } from './lib/socketio';
 import { createLike } from './routes/create-like';
 import { createMessage } from './routes/create-message';
 import { createUser } from './routes/create-user';
@@ -26,9 +28,16 @@ import { updateMessage } from './routes/update-message';
 import { updateUser } from './routes/update-user';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
+let io: Server;
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
+
+app.decorate('io', {
+  getter() {
+    return io;
+  },
+});
 
 app.register(fastifyCors, { origin: '*' });
 
@@ -65,6 +74,17 @@ app.register(getUserChats);
 app.register(getNotLikedUsers);
 app.register(getUnreadMessagesCountPerChat);
 
-app.listen({ host: '0.0.0.0', port: 3000 }).then(() => {
-  console.log('Server running!');
-});
+const start = async () => {
+  try {
+    await app.listen({ host: '0.0.0.0', port: 3000 });
+
+    console.log('HTTP server running!');
+
+    io = setupSocketIO(app);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+};
+
+start();

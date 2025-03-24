@@ -6,6 +6,7 @@ import type {
   RawServerDefault,
 } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
+import { Server } from 'socket.io';
 
 export type FastifyTypedInstance = FastifyInstance<
   RawServerDefault,
@@ -21,6 +22,10 @@ export type TokenContent = {
 };
 
 declare module 'fastify' {
+  interface FastifyInstance {
+    io: Server;
+  }
+
   interface FastifyRequest {
     user: TokenContent;
   }
