@@ -59,7 +59,9 @@ export async function updateUser(app: FastifyTypedInstance) {
         data: dataToBeUpdated,
       });
 
-      return reply.code(200).send({ message: 'User updated successfully' });
+      return reply
+        .code(200)
+        .send({ message: 'Usuário atualizado com sucesso' });
     }
   );
 }

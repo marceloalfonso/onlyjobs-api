@@ -49,25 +49,26 @@ export async function updateMessage(app: FastifyTypedInstance) {
       });
 
       if (!message) {
-        return reply.code(404).send({ message: 'Message not found' });
+        return reply.code(404).send({ message: 'Mensagem não encontrada' });
       }
 
       if (message.read) {
         return reply
           .code(400)
-          .send({ message: 'Message is already marked as read' });
+          .send({ message: 'Mensagem já marcada como lida' });
       }
 
       if (!message.chat.userIds.includes(userId)) {
-        return reply
-          .code(403)
-          .send({ message: 'Not authorized to update this message' });
+        return reply.code(403).send({
+          message:
+            'Autorização necessária para atualizar o status de leitura da mensagem',
+        });
       }
 
       if (message.senderId === userId) {
-        return reply
-          .code(400)
-          .send({ message: 'Cannot mark your own message as read' });
+        return reply.code(400).send({
+          message: 'Não é possível marcar sua própria mensagem como lida',
+        });
       }
 
       await prisma.$transaction(async (tx) => {
@@ -84,9 +85,9 @@ export async function updateMessage(app: FastifyTypedInstance) {
         });
       });
 
-      return reply
-        .code(200)
-        .send({ message: 'Message read status updated successfully' });
+      return reply.code(200).send({
+        message: 'Status de leitura da mensagem atualizado com sucesso',
+      });
     }
   );
 }

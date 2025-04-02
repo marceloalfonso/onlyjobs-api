@@ -37,7 +37,9 @@ export async function createUser(app: FastifyTypedInstance) {
       });
 
       if (existingUser) {
-        return reply.code(409).send({ message: 'User already exists' });
+        return reply
+          .code(409)
+          .send({ message: 'Este e-mail já está cadastrado' });
       }
 
       const hash = hashSync(password, 10);

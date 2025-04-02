@@ -11,7 +11,7 @@ export const auth = (
     const token = request.headers.authorization;
 
     if (!token) {
-      return reply.code(401).send({ message: 'Authentication required' });
+      return reply.code(401).send({ message: 'Autenticação necessária' });
     }
 
     const decoded = verify(token, process.env.SECRET as string);
@@ -20,6 +20,6 @@ export const auth = (
 
     next();
   } catch (error) {
-    return reply.code(401).send({ message: 'Invalid authentication' });
+    return reply.code(401).send({ message: 'Autenticação inválida' });
   }
 };

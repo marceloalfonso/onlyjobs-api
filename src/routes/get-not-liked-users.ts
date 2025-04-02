@@ -39,7 +39,7 @@ export async function getNotLikedUsers(app: FastifyTypedInstance) {
       });
 
       if (!user) {
-        return reply.code(404).send({ message: 'User not found' });
+        return reply.code(404).send({ message: 'Usuário não encontrado' });
       }
 
       const likedUserIds = user.sentLikes.map((sentLike) => sentLike.toUserId);

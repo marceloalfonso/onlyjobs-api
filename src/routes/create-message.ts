@@ -21,6 +21,9 @@ export async function createMessage(app: FastifyTypedInstance) {
           201: z.object({
             messageId: z.string(),
           }),
+          403: z.object({
+            message: z.string(),
+          }),
           404: z.object({
             message: z.string(),
           }),
@@ -34,11 +37,17 @@ export async function createMessage(app: FastifyTypedInstance) {
 
       const chat = await prisma.chat.findUnique({
         where: { id: chatId },
-        select: { id: true },
+        select: { id: true, userIds: true },
       });
 
       if (!chat) {
-        return reply.code(404).send({ message: 'Chat not found' });
+        return reply.code(404).send({ message: 'Chat não encontrado' });
+      }
+
+      if (!chat.userIds.includes(userId)) {
+        return reply.code(403).send({
+          message: 'Você não tem permissão para enviar mensagens neste chat',
+        });
       }
 
       const { message } = await prisma.$transaction(async (tx) => {
@@ -56,6 +65,13 @@ export async function createMessage(app: FastifyTypedInstance) {
         });
 
         return { message };
+      });
+
+      app.io.to(`chat:${chatId}`).emit('new_message', {
+        id: message.id,
+        chatId,
+        senderId: userId,
+        content,
       });
 
       return reply.code(201).send({ messageId: message.id });

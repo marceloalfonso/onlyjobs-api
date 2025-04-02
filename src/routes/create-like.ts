@@ -48,13 +48,15 @@ export async function createLike(app: FastifyTypedInstance) {
       ]);
 
       if (!fromUser || !toUser) {
-        return reply.code(404).send({ message: 'User(s) not found' });
+        return reply
+          .code(404)
+          .send({ message: 'Usuário(s) não encontrado(s)' });
       }
 
       if (fromUser.role === toUser.role) {
-        return reply
-          .code(400)
-          .send({ message: 'Cannot like a user with the same role' });
+        return reply.code(400).send({
+          message: 'Não é possível dar like num usuário com a mesma função',
+        });
       }
 
       const existingLike = await prisma.like.findUnique({
@@ -68,7 +70,7 @@ export async function createLike(app: FastifyTypedInstance) {
 
       if (existingLike) {
         return reply.status(409).send({
-          message: 'You already liked this user',
+          message: 'Você já deu like neste usuário',
         });
       }
 

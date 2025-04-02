@@ -13,9 +13,14 @@ export function setupSocketIO(app: FastifyTypedInstance) {
   io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
 
-    socket.on('ping', (data) => {
-      console.log('ping', data);
-      socket.emit('pong', 'pong');
+    socket.on('join_chat', (chatId) => {
+      socket.join(`chat:${chatId}`);
+      console.log(`Client ${socket.id} joined chat ${chatId}`);
+    });
+
+    socket.on('leave_chat', (chatId) => {
+      socket.leave(`chat:${chatId}`);
+      console.log(`Client ${socket.id} left chat ${chatId}`);
     });
 
     socket.on('disconnect', () => {
