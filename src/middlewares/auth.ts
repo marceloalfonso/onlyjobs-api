@@ -2,11 +2,11 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { verify } from 'jsonwebtoken';
 import { TokenContent } from '../types';
 
-export const auth = (
+export default function auth(
   request: FastifyRequest,
   reply: FastifyReply,
   next: () => void
-) => {
+) {
   try {
     const token = request.headers.authorization;
 
@@ -22,4 +22,4 @@ export const auth = (
   } catch (error) {
     return reply.code(401).send({ message: 'Autenticação inválida' });
   }
-};
+}

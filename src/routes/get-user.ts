@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import dayjs from '../lib/dayjs';
 import prisma from '../lib/prisma';
-import { auth } from '../middlewares/auth';
+import auth from '../middlewares/auth';
 import { FastifyTypedInstance } from '../types';
 
 export async function getUser(app: FastifyTypedInstance) {

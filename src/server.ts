@@ -9,7 +9,7 @@ import {
   ZodTypeProvider,
 } from 'fastify-type-provider-zod';
 import { Server } from 'socket.io';
-import { setupSocketIO } from './lib/socketio';
+import setupSocketIO from './lib/socketio';
 import { createLike } from './routes/create-like';
 import { createMessage } from './routes/create-message';
 import { createUser } from './routes/create-user';
@@ -25,7 +25,9 @@ import { getUserReceivedLikes } from './routes/get-user-received-likes';
 import { getUserSentLikes } from './routes/get-user-sent-likes';
 import { signIn } from './routes/sign-in';
 import { updateMessage } from './routes/update-message';
-import { updateUser } from './routes/update-user';
+import { updateUserName } from './routes/update-user-name';
+import { updateUserPassword } from './routes/update-user-password';
+import { updateUserProfile } from './routes/update-user-profile';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 let io: Server;
@@ -59,7 +61,9 @@ app.register(createUser);
 app.register(createLike);
 app.register(createMessage);
 
-app.register(updateUser);
+app.register(updateUserName);
+app.register(updateUserProfile);
+app.register(updateUserPassword);
 app.register(updateMessage);
 
 app.register(deleteUser);

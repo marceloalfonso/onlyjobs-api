@@ -1,6 +1,6 @@
 import z from 'zod';
 import prisma from '../lib/prisma';
-import { auth } from '../middlewares/auth';
+import auth from '../middlewares/auth';
 import { FastifyTypedInstance } from '../types';
 
 export async function getNotLikedUsers(app: FastifyTypedInstance) {

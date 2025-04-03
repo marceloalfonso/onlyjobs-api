@@ -1,7 +1,7 @@
 import { Server } from 'socket.io';
 import { FastifyTypedInstance } from '../types';
 
-export function setupSocketIO(app: FastifyTypedInstance) {
+export default function setupSocketIO(app: FastifyTypedInstance) {
   const httpServer = app.server;
 
   const io = new Server(httpServer, {

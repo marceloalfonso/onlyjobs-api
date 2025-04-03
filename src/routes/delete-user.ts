@@ -1,6 +1,6 @@
 import z from 'zod';
 import prisma from '../lib/prisma';
-import { auth } from '../middlewares/auth';
+import auth from '../middlewares/auth';
 import { FastifyTypedInstance } from '../types';
 
 export async function deleteUser(app: FastifyTypedInstance) {
@@ -13,6 +13,9 @@ export async function deleteUser(app: FastifyTypedInstance) {
         tags: ['users'],
         response: {
           200: z.object({
+            message: z.string(),
+          }),
+          404: z.object({
             message: z.string(),
           }),
         },
@@ -66,7 +69,6 @@ export async function deleteUser(app: FastifyTypedInstance) {
           where: { OR: [{ fromUserId: userId }, { toUserId: userId }] },
         });
 
-        // 5. Deletar o usuário
         await tx.user.delete({
           where: { id: userId },
         });
