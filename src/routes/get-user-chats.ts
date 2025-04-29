@@ -20,13 +20,11 @@ export async function getUserChats(app: FastifyTypedInstance) {
               userIds: z.array(z.string()),
               createdAt: z.string(),
               updatedAt: z.string(),
-              otherUser: z.array(
-                z.object({
-                  id: z.string(),
-                  name: z.string(),
-                  profile: z.record(z.any()),
-                })
-              ),
+              otherUser: z.object({
+                id: z.string(),
+                name: z.string(),
+                profile: z.record(z.any()),
+              }),
               messages: z.array(
                 z.object({
                   id: z.string(),
@@ -108,13 +106,21 @@ export async function getUserChats(app: FastifyTypedInstance) {
 
         return {
           ...chat,
-          createdAt: dayjs(chat.createdAt).format('DD/MM/YY - HH:mm:ss'),
-          updatedAt: dayjs(chat.updatedAt).format('DD/MM/YY - HH:mm:ss'),
-          otherUser: otherUser,
+          createdAt: dayjs(chat.createdAt)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YY - HH:mm:ss'),
+          updatedAt: dayjs(chat.updatedAt)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YY - HH:mm:ss'),
+          otherUser: otherUser[0],
           messages: chat.messages.map((message) => ({
             ...message,
-            createdAt: dayjs(message.createdAt).format('DD/MM/YY - HH:mm:ss'),
-            updatedAt: dayjs(message.updatedAt).format('DD/MM/YY - HH:mm:ss'),
+            createdAt: dayjs(message.createdAt)
+              .tz('America/Sao_Paulo')
+              .format('DD/MM/YY - HH:mm:ss'),
+            updatedAt: dayjs(message.updatedAt)
+              .tz('America/Sao_Paulo')
+              .format('DD/MM/YY - HH:mm:ss'),
           })),
         };
       });

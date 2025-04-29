@@ -49,7 +49,9 @@ export async function getUserReceivedLikes(app: FastifyTypedInstance) {
       return reply.code(200).send(
         likes.map((like) => ({
           ...like,
-          createdAt: dayjs(like.createdAt).format('DD/MM/YY - HH:mm:ss'),
+          createdAt: dayjs(like.createdAt)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YY - HH:mm:ss'),
           fromUser: {
             ...like.fromUser,
             profile: like.fromUser.profile as Record<string, any>,

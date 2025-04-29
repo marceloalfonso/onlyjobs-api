@@ -22,7 +22,7 @@ export async function updateUserName(app: FastifyTypedInstance) {
       },
     },
     async (request, reply) => {
-      const userId = request.user.sub; 
+      const userId = request.user.sub;
       const { name } = request.body;
 
       await prisma.user.update({

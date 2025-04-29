@@ -47,8 +47,12 @@ export async function getCompanies(app: FastifyTypedInstance) {
         users.map((user) => ({
           ...user,
           profile: user.profile as Record<string, any>,
-          createdAt: dayjs(user.createdAt).format('DD/MM/YY - HH:mm:ss'),
-          updatedAt: dayjs(user.updatedAt).format('DD/MM/YY - HH:mm:ss'),
+          createdAt: dayjs(user.createdAt)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YY - HH:mm:ss'),
+          updatedAt: dayjs(user.updatedAt)
+            .tz('America/Sao_Paulo')
+            .format('DD/MM/YY - HH:mm:ss'),
         }))
       );
     }
