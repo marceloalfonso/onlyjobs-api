@@ -11,7 +11,7 @@ export default function auth(
     const token = request.headers.authorization;
 
     if (!token) {
-      return reply.code(401).send({ message: 'Autenticação necessária' });
+      return reply.code(401).send({ message: 'Autenticação necessária.' });
     }
 
     const decoded = verify(token, process.env.SECRET as string);
@@ -20,6 +20,6 @@ export default function auth(
 
     next();
   } catch (error) {
-    return reply.code(401).send({ message: 'Autenticação inválida' });
+    return reply.code(401).send({ message: 'Autenticação inválida.' });
   }
 }

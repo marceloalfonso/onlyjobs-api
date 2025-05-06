@@ -55,7 +55,7 @@ export async function createLike(app: FastifyTypedInstance) {
 
       if (fromUser.role === toUser.role) {
         return reply.code(400).send({
-          message: 'Não é possível dar like num usuário com a mesma função',
+          message: 'Não é possível dar like num usuário com a mesma função.',
         });
       }
 
@@ -69,8 +69,8 @@ export async function createLike(app: FastifyTypedInstance) {
       });
 
       if (existingLike) {
-        return reply.status(409).send({
-          message: 'Você já deu like neste usuário',
+        return reply.code(409).send({
+          message: 'Você já deu like neste usuário.',
         });
       }
 

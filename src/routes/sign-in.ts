@@ -41,7 +41,7 @@ export async function signIn(app: FastifyTypedInstance) {
 
       if (!user || !compareSync(password, user.password)) {
         return reply.code(401).send({
-          message: 'Invalid email or password',
+          message: 'E-mail ou senha inválidos. Tente novamente.',
         });
       }
 

@@ -30,7 +30,7 @@ export async function deleteUser(app: FastifyTypedInstance) {
       });
 
       if (!user) {
-        return reply.code(404).send({ message: 'Usuário não encontrado' });
+        return reply.code(404).send({ message: 'Usuário não encontrado.' });
       }
 
       await prisma.$transaction(async (tx) => {

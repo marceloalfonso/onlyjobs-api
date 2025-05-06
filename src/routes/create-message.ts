@@ -41,12 +41,12 @@ export async function createMessage(app: FastifyTypedInstance) {
       });
 
       if (!chat) {
-        return reply.code(404).send({ message: 'Chat não encontrado' });
+        return reply.code(404).send({ message: 'Chat não encontrado.' });
       }
 
       if (!chat.userIds.includes(userId)) {
         return reply.code(403).send({
-          message: 'Você não tem permissão para enviar mensagens neste chat',
+          message: 'Você não tem permissão para enviar mensagens neste chat.',
         });
       }
 

@@ -49,25 +49,25 @@ export async function updateMessage(app: FastifyTypedInstance) {
       });
 
       if (!message) {
-        return reply.code(404).send({ message: 'Mensagem não encontrada' });
+        return reply.code(404).send({ message: 'Mensagem não encontrada.' });
       }
 
       if (message.read) {
         return reply
           .code(400)
-          .send({ message: 'Mensagem já marcada como lida' });
+          .send({ message: 'Mensagem já marcada como lida.' });
       }
 
       if (!message.chat.userIds.includes(userId)) {
         return reply.code(403).send({
           message:
-            'Autorização necessária para atualizar o status de leitura da mensagem',
+            'Autorização necessária para atualizar o status de leitura da mensagem.',
         });
       }
 
       if (message.senderId === userId) {
         return reply.code(400).send({
-          message: 'Não é possível marcar sua própria mensagem como lida',
+          message: 'Não é possível marcar sua própria mensagem como lida.',
         });
       }
 
@@ -83,6 +83,10 @@ export async function updateMessage(app: FastifyTypedInstance) {
           where: { id: message.chatId },
           data: {},
         });
+      });
+
+      app.io.to(`chat:${message.chatId}`).emit('message_read', {
+        messageId,
       });
 
       return reply.code(200).send({

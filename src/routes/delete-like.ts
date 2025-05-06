@@ -46,7 +46,7 @@ export async function deleteLike(app: FastifyTypedInstance) {
       });
 
       if (!like) {
-        return reply.code(404).send({ message: 'Like não encontrado' });
+        return reply.code(404).send({ message: 'Like não encontrado.' });
       }
 
       const chat = await prisma.chat.findFirst({
@@ -61,7 +61,7 @@ export async function deleteLike(app: FastifyTypedInstance) {
       if (chat) {
         return reply.code(400).send({
           message:
-            'Não é possível deletar o like, pois existe um chat entre os usuários',
+            'Não é possível deletar o like, pois existe um chat entre os usuários.',
         });
       }
 

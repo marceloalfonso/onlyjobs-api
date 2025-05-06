@@ -33,7 +33,7 @@ export async function getUnreadMessagesCountPerChat(app: FastifyTypedInstance) {
       });
 
       if (!user) {
-        return reply.code(404).send({ message: 'Usuário não encontrado' });
+        return reply.code(404).send({ message: 'Usuário não encontrado.' });
       }
 
       const messagesGroups = await prisma.message.groupBy({
