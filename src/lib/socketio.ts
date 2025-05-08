@@ -13,6 +13,16 @@ export default function setupSocketIO(app: FastifyTypedInstance) {
   io.on('connection', (socket) => {
     console.log('Client connected:', socket.id);
 
+    socket.on('join_user_room', (userId) => {
+      socket.join(`user:${userId}`);
+      console.log(`User ${userId} joined personal room`);
+    });
+
+    socket.on('leave_user_room', (userId) => {
+      socket.leave(`user:${userId}`);
+      console.log(`User ${userId} left personal room`);
+    });
+
     socket.on('join_chat', (chatId) => {
       socket.join(`chat:${chatId}`);
       console.log(`Client ${socket.id} joined chat ${chatId}`);

@@ -50,6 +50,14 @@ export async function createMessage(app: FastifyTypedInstance) {
         });
       }
 
+      const recipientId = chat.userIds.find((id) => id !== userId);
+
+      if (!recipientId) {
+        return reply.code(404).send({
+          message: 'Destinatário não encontrado.',
+        });
+      }
+
       const { message } = await prisma.$transaction(async (tx) => {
         const message = await tx.message.create({
           data: {
@@ -73,6 +81,8 @@ export async function createMessage(app: FastifyTypedInstance) {
         senderId: userId,
         content,
       });
+
+      app.io.to(`user:${recipientId}`).emit('new_notification');
 
       return reply.code(201).send({ messageId: message.id });
     }
