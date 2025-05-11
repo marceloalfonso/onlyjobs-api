@@ -91,12 +91,13 @@ export async function createLike(app: FastifyTypedInstance) {
       });
 
       if (reciprocalLike) {
+        const userIds = [fromUserId, toUserId].sort();
+
         const existingChat = await prisma.chat.findFirst({
           where: {
-            AND: [
-              { userIds: { has: fromUserId } },
-              { userIds: { has: toUserId } },
-            ],
+            userIds: {
+              hasEvery: userIds,
+            },
           },
         });
 
@@ -105,8 +106,6 @@ export async function createLike(app: FastifyTypedInstance) {
             .code(201)
             .send({ likeId: like.id, chatId: existingChat.id });
         }
-
-        const userIds = [fromUserId, toUserId].sort();
 
         const { chat } = await prisma.$transaction(async (tx) => {
           const chat = await tx.chat.create({
